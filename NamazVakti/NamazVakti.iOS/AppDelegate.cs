@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+using ObjCRuntime;
 using UIKit;
+using Xamarin.Forms;
 
 namespace NamazVakti.iOS
 {
@@ -25,7 +27,19 @@ namespace NamazVakti.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
+
             return base.FinishedLaunching(app, options);
+        }
+
+        public override void PerformFetch(UIApplication application,  Action<UIBackgroundFetchResult> completionHandler)
+        {
+            //https://xamarinhelp.com/xamarin-background-tasks/
+
+            // buraya interval suresi kontrol koy
+            MessagingCenter.Send<object, string>(this, "trigger", "Modify from IOS");
+
+
+            base.PerformFetch(application, completionHandler);
         }
     }
 }
