@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Foundation;
+using NamazVakti.Services;
 using UIKit;
 using Xamarin.Forms;
 

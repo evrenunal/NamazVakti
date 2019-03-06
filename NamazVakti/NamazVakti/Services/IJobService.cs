@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NamazVakti
+namespace NamazVakti.Services
 {
     public interface IJobService
     {

@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using NamazVakti.Services;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(NamazVakti.Droid.JobService))]
