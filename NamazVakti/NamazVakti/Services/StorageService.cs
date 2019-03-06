@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using Xamarin.Essentials;
 
 namespace NamazVakti.Services
 {
@@ -11,6 +13,19 @@ namespace NamazVakti.Services
 
         }
 
+        internal (bool,string) GetFile(string thisMonthId)
+        {
+            var mainDir = FileSystem.AppDataDirectory;
 
+
+            var filePath = Path.Combine(mainDir, thisMonthId);
+
+            if (!File.Exists(filePath))
+                return (false, "");
+
+            var fileContent = File.ReadAllText(filePath);
+
+            return (true, fileContent);
+        }
     }
 }
