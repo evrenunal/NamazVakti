@@ -6,16 +6,11 @@ namespace NamazVakti.Models
 {
     public class MonthlyPrayerTimes
     {
-        public DailyTime[] DayPrayerTimes { get; set; }
+        public DailyTimeData[] DayPrayerTimes { get; set; }
     }
 
-
-    //public class Rootobject
-    //{
-    //    public Class1[] Property1 { get; set; }
-    //}
-
-    public class DailyTime
+    
+    public class DailyTimeData
     {
         public string Aksam { get; set; }
         public string AyinSekliURL { get; set; }

@@ -27,5 +27,15 @@ namespace NamazVakti.Services
 
             return (true, fileContent);
         }
+
+        internal void SaveFile(string fileToSave, string thisMonthId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DeleteFile(string lastMonthId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

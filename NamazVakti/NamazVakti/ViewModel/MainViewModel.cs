@@ -35,6 +35,7 @@ namespace NamazVakti.ViewModel
 
         private void StartListener(object obj)
         {
+
             MessagingCenter
                .Subscribe<object, string>(this, "trigger", (s, e) =>
                {
