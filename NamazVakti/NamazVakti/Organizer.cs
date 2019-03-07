@@ -31,7 +31,7 @@ namespace NamazVakti
 
             var thisMonthId = cyckleStartTm.ToString("yy-MM");
 
-            var (success, file) = strg.GetFile(thisMonthId);
+            var (success, file) = strg.GetFile(thisMonthId);            
             DailyTimes[] dailyTimes = null;
 
             if (success)
@@ -42,7 +42,7 @@ namespace NamazVakti
             {
                 var ilceKod = AppSettings.GetValueOrDefault(nameof(LocationParams.ilce), defaultIlce);
                 var monthlyData = nmzApi.GetMonthlyPrayerTimes(ilceKod);
-                dailyTimes = monthlyData.DayPrayerTimes.Select(s => s.Map()).ToArray();
+                dailyTimes = monthlyData.Select(s => s.Map()).ToArray();
 
                 var fileToSave = JsonConvert.SerializeObject(dailyTimes);
 

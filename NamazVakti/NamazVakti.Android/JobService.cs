@@ -30,9 +30,9 @@ namespace NamazVakti.Droid
         private PendingIntent pending;
         public AlarmManager alarmManager;
 
-        public void StartJob()
+        public void StartJob(int jobIntervalInSecond)
         {
-            alarmManager.SetRepeating(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 3000, 2000, pending);
+            alarmManager.SetRepeating(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 3000, jobIntervalInSecond*1000, pending);
         }
 
         public void StopJob()

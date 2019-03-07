@@ -1,6 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
 using NamazVakti.Models;
+using Newtonsoft.Json;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 using System;
@@ -21,15 +22,15 @@ namespace NamazVakti.Services
 
         public ISettings AppSettings { get; }
 
-        internal MonthlyPrayerTimes GetMonthlyPrayerTimes(string ilceKod)
+        internal DailyTimeData[] GetMonthlyPrayerTimes(string ilceKod)
         {
-            var person = baseUrl
-                          .AppendPathSegment("person")
-                          .SetQueryParams(new { a = 1, b = 2 })
-                          .GetJsonAsync<MonthlyPrayerTimes>()
+            var prayerTimeList = baseUrl
+                          .AppendPathSegment("vakitler")
+                          .SetQueryParams(new { ilce = ilceKod })
+                          .GetJsonAsync<DailyTimeData[]> ()
                           .Result;
 
-            return person;
+            return prayerTimeList;
         }
     }
 }

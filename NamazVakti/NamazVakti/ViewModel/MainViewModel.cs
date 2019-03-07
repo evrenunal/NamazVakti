@@ -45,7 +45,7 @@ namespace NamazVakti.ViewModel
                    });
                });
 
-            deps.StartJob();
+            deps.StartJob(20);
 
             runing = true;
         }

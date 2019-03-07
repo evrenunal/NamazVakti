@@ -12,6 +12,6 @@ namespace NamazVakti.Models
         public DateTime Ikindi { get; set; }
         public DateTime Aksam { get; set; }
         public DateTime Yatsi { get; set; }
-        public DateTime Date { get; internal set; }
+        public DateTime Date { get;  set; }
     }
 }

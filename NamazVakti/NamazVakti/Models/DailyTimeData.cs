@@ -4,12 +4,6 @@ using System.Text;
 
 namespace NamazVakti.Models
 {
-    public class MonthlyPrayerTimes
-    {
-        public DailyTimeData[] DayPrayerTimes { get; set; }
-    }
-
-    
     public class DailyTimeData
     {
         public string Aksam { get; set; }
@@ -29,5 +23,4 @@ namespace NamazVakti.Models
         public string Ogle { get; set; }
         public string Yatsi { get; set; }
     }
-
 }

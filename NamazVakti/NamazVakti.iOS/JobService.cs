@@ -13,11 +13,9 @@ namespace NamazVakti.iOS
 {
     public class JobService : IJobService
     {
-        public void StartJob()
+        public void StartJob(int jobIntervalInSecond)
         {
-
             UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(UIApplication.BackgroundFetchIntervalMinimum);
-
         }
 
         public void StopJob()
