@@ -8,16 +8,15 @@ namespace NamazVakti.Services
 {
     public class StorageService
     {
+        private string mainDir;
+
         public StorageService()
         {
-
+            mainDir = FileSystem.AppDataDirectory;
         }
 
-        internal (bool,string) GetFile(string thisMonthId)
+        internal (bool, string) GetFile(string thisMonthId)
         {
-            var mainDir = FileSystem.AppDataDirectory;
-
-
             var filePath = Path.Combine(mainDir, thisMonthId);
 
             if (!File.Exists(filePath))
@@ -30,12 +29,14 @@ namespace NamazVakti.Services
 
         internal void SaveFile(string fileToSave, string thisMonthId)
         {
-            throw new NotImplementedException();
+            var filePath = Path.Combine(mainDir, thisMonthId);
+            File.WriteAllText(filePath, fileToSave);
         }
 
         internal void DeleteFile(string lastMonthId)
         {
-            throw new NotImplementedException();
+            var filePath = Path.Combine(mainDir, lastMonthId);
+            File.Delete(filePath);
         }
     }
 }
