@@ -14,14 +14,16 @@ namespace NamazVakti
     {
         private readonly StorageService strg;
         private readonly NamazApiService nmzApi;
+        private readonly ViewModel.MainViewModel mainViewModel;
         private static ISettings AppSettings;
         private string defaultIlce = "9225";
 
-        public Organizer()
+        public Organizer(ViewModel.MainViewModel mainViewModel)
         {
             strg = new StorageService();
             AppSettings = CrossSettings.Current;
             nmzApi = new NamazApiService();
+            this.mainViewModel = mainViewModel;
         }
 
        
@@ -57,31 +59,35 @@ namespace NamazVakti
 
             switch (DateTime.Now.TimeOfDay)
             {
+               
                 case var now when todaysData.Imsak.TimeOfDay < now && now < todaysData.Gunes.TimeOfDay:
                     AlertUser("Sabah", todaysData.Gunes.TimeOfDay - now);
                     break;
                 case var now when todaysData.Ogle.TimeOfDay < now && now < todaysData.Ikindi.TimeOfDay:
-                    AlertUser("Öğle", todaysData.Gunes.TimeOfDay - now);
+                    AlertUser("Öğle", todaysData.Ikindi.TimeOfDay - now);
                     break;
                 case var now when todaysData.Ikindi.TimeOfDay < now && now < todaysData.Aksam.TimeOfDay:
-                    AlertUser("İkindi", todaysData.Ikindi.TimeOfDay - now);
+                    AlertUser("İkindi", todaysData.Aksam.TimeOfDay - now);
                     break;
                 case var now when todaysData.Aksam.TimeOfDay < now && now < todaysData.Yatsi.TimeOfDay:
-                    AlertUser("Akşam", todaysData.Aksam.TimeOfDay - now);
+                    AlertUser("Akşam", todaysData.Yatsi.TimeOfDay - now);
                     break;
-                case var now when todaysData.Yatsi.TimeOfDay < now && now < todaysData.Imsak.TimeOfDay:
-                    AlertUser("Yatsı", todaysData.Yatsi.TimeOfDay - now);
+                case var now when todaysData.Yatsi.TimeOfDay < now || now < todaysData.Imsak.TimeOfDay: // this case will be fixed to take next days time
+                    AlertUser("Yatsı", TimeSpan.FromHours(24) + todaysData.Imsak.TimeOfDay - now  );
                     break;
-            }
 
+            }
         }
 
         private void AlertUser(string prayKind, TimeSpan remainingTime)
         {
-              CrossLocalNotifications.Current.Show("Namaz Vakti",
-                  $"{ prayKind} vaktine kalan süre:{Environment.NewLine}{remainingTime.Hours}:{remainingTime.Minutes}"+
-                  $"{Environment.NewLine}Bildirim Zamanı: {DateTime.Now.ToString("HH:mm")}"
-                  );
+            var message =
+                  $"{ prayKind} namazi vaktinin çıkması için kalan süre: {remainingTime.Hours}:{remainingTime.Minutes}" +
+                  $"{Environment.NewLine}Bildirim Zamanı: {DateTime.Now.ToString("HH:mm")}";
+
+            CrossLocalNotifications.Current.Show("Namaz Vakti",message);
+
+            mainViewModel.AlertMessage = message;
         }
     }
 }

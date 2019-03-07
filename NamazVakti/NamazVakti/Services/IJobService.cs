@@ -6,7 +6,7 @@ namespace NamazVakti.Services
 {
     public interface IJobService
     {
-        void StartJob(int jobIntervalInSecond);
+        void StartJob(int jobIntervalInMinutes);
         void StopJob();
     }
 }

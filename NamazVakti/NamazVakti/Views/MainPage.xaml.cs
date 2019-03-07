@@ -14,11 +14,11 @@ namespace NamazVakti.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MainPage : ContentPage
 	{
-       
+        public MainViewModel viewModel;
 
         public MainPage ()
 		{
-            var viewModel = new MainViewModel();
+             viewModel = new MainViewModel();
             BindingContext = viewModel;
 
             InitializeComponent ();

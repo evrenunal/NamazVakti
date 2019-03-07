@@ -8,26 +8,29 @@ namespace NamazVakti
 {
     public partial class App : Application
     {
+        private MainPage mainPage;
+
         public App()
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+             mainPage = new MainPage();
+            MainPage = new NavigationPage(mainPage);
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            mainPage.viewModel.AlertMessage = "onstart";
         }
 
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+            mainPage.viewModel.AlertMessage = "onsleep";
         }
 
         protected override void OnResume()
         {
-            // Handle when your app resumes
+            mainPage.viewModel.AlertMessage = "onresume";
         }
     }
 }

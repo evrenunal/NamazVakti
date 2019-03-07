@@ -8,6 +8,7 @@
         <StackLayout>
             <Button Text="Başlat" Command="{Binding StartService}"/>
             <Button Text="Durdur" Command="{Binding StopService}"/>
+            <Label Text="{Binding AlertMessage, Mode=TwoWay}" FontAttributes="Bold" FontSize="Large"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
