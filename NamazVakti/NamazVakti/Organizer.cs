@@ -19,6 +19,7 @@ namespace NamazVakti
         private readonly ViewModel.MainViewModel mainViewModel;
         private static ISettings AppSettings;
         private string defaultIlce = "9225";
+        const string fileName = "MonthlyPrayTimes";
 
         public Organizer(ViewModel.MainViewModel mainViewModel)
         {
@@ -32,33 +33,28 @@ namespace NamazVakti
        
         internal void RunCycle()
         {
-            var cyckleStartTm = DateTime.Now;
+            var cycleStartTm = DateTime.Now;
 
-            var thisMonthId = cyckleStartTm.ToString("yy-MM");
-
-            var (success, file) = strg.GetFile(thisMonthId);            
             DailyTimes[] dailyTimes = null;
+            var (success, file) = strg.GetFile(fileName);
 
-            if (success)
+            if (!success)
             {
-                dailyTimes = JsonConvert.DeserializeObject<DailyTimes[]>(file);
+                dailyTimes = PullMonthlyData();
+
             }
             else
             {
-                var ilceKod = AppSettings.GetValueOrDefault(nameof(LocationParams.ilce), defaultIlce);
-                var monthlyData = nmzApi.GetMonthlyPrayerTimes(ilceKod);
-                dailyTimes = monthlyData.Select(s => s.Map()).ToArray();
+                dailyTimes = JsonConvert.DeserializeObject<DailyTimes[]>(file);
 
-                var fileToSave = JsonConvert.SerializeObject(dailyTimes);
-
-                strg.SaveFile(fileToSave, thisMonthId);
-                var lastMonthId = cyckleStartTm.AddMonths(-1).ToString("yy-MM");
-                strg.DeleteFile(lastMonthId);
+                if(!dailyTimes.Any(dt =>dt.Date> cycleStartTm.Date))
+                    dailyTimes = PullMonthlyData();
             }
 
-            var todaysData = dailyTimes.FirstOrDefault(dd => dd.Date == cyckleStartTm.Date);
+            var todaysData = dailyTimes.FirstOrDefault(dd => dd.Date == cycleStartTm.Date);
+            var tomorrowData = dailyTimes.FirstOrDefault(dd => dd.Date == cycleStartTm.Date.AddDays(1));
 
-            if (DateTime.Now.Date > cyckleStartTm) RunCycle();
+            if (DateTime.Now.Date > cycleStartTm.Date) RunCycle();//if the day passed since the method started
 
             switch (DateTime.Now.TimeOfDay)
             {
@@ -75,11 +71,23 @@ namespace NamazVakti
                 case var now when todaysData.Aksam.TimeOfDay < now && now < todaysData.Yatsi.TimeOfDay:
                     AlertUser("Akşam", todaysData.Yatsi.TimeOfDay - now);
                     break;
-                case var now when todaysData.Yatsi.TimeOfDay < now || now < todaysData.Imsak.TimeOfDay: // this case will be fixed to take next days time
-                    AlertUser("Yatsı", TimeSpan.FromHours(24) + todaysData.Imsak.TimeOfDay - now  );
+                case var now when todaysData.Yatsi.TimeOfDay < now || now < tomorrowData.Imsak.TimeOfDay: 
+                    AlertUser("Yatsı",TimeSpan.FromHours(24) - now + tomorrowData.Imsak.TimeOfDay   );
                     break;
-
             }
+        }
+
+        private DailyTimes[] PullMonthlyData()
+        {
+            DailyTimes[] dailyTimes;
+            var ilceKod = AppSettings.GetValueOrDefault(nameof(LocationParams.ilce), defaultIlce);
+            var monthlyData = nmzApi.GetMonthlyPrayerTimes(ilceKod);
+            dailyTimes = monthlyData.Select(s => s.Map()).ToArray();
+
+            var fileToSave = JsonConvert.SerializeObject(dailyTimes);
+
+            strg.SaveFile(fileToSave, fileName);
+            return dailyTimes;
         }
 
         private void AlertUser(string prayKind, TimeSpan remainingTime)
@@ -98,8 +106,6 @@ namespace NamazVakti
               //  NotifyTime = DateTime.Now// Used for Scheduling local notification.
             };
             notificationService.Show(notification);
-
-            
 
             mainViewModel.AlertMessage = message;
         }
