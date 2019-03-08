@@ -1,12 +1,13 @@
 ﻿using NamazVakti.Models;
 using NamazVakti.Services;
 using Newtonsoft.Json;
-using Plugin.LocalNotifications;
+using Plugin.LocalNotification;
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 using System;
 using System.Linq;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace NamazVakti
 {
@@ -14,6 +15,7 @@ namespace NamazVakti
     {
         private readonly StorageService strg;
         private readonly NamazApiService nmzApi;
+        private readonly ILocalNotificationService notificationService;
         private readonly ViewModel.MainViewModel mainViewModel;
         private static ISettings AppSettings;
         private string defaultIlce = "9225";
@@ -23,6 +25,7 @@ namespace NamazVakti
             strg = new StorageService();
             AppSettings = CrossSettings.Current;
             nmzApi = new NamazApiService();
+            notificationService = DependencyService.Get<ILocalNotificationService>();
             this.mainViewModel = mainViewModel;
         }
 
@@ -85,7 +88,18 @@ namespace NamazVakti
                   $"{ prayKind} namazi vaktinin çıkması için kalan süre: {remainingTime.Hours}:{remainingTime.Minutes}" +
                   $"{Environment.NewLine}Bildirim Zamanı: {DateTime.Now.ToString("HH:mm")}";
 
-            CrossLocalNotifications.Current.Show("Namaz Vakti",message);
+             
+            var notification = new Plugin.LocalNotification.LocalNotification
+            {
+                NotificationId = 100,
+                Title = "Namaz Vakti",
+                Description = message,
+                ReturningData = "Dummy data", // Returning data when tapped on notification.
+              //  NotifyTime = DateTime.Now// Used for Scheduling local notification.
+            };
+            notificationService.Show(notification);
+
+            
 
             mainViewModel.AlertMessage = message;
         }

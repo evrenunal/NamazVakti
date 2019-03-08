@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using ObjCRuntime;
+using Plugin.LocalNotification.Platform.iOS;
 using UIKit;
 using Xamarin.Forms;
 
@@ -27,7 +28,7 @@ namespace NamazVakti.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
-
+            LocalNotificationService.Init();
             return base.FinishedLaunching(app, options);
         }
 
@@ -40,6 +41,16 @@ namespace NamazVakti.iOS
 
 
             base.PerformFetch(application, completionHandler);
+        }
+
+        public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
+        {
+            base.ReceivedLocalNotification(application, notification);
+
+            if (UIApplication.SharedApplication.ApplicationState != UIApplicationState.Active)
+            {
+                LocalNotificationService.NotifyNotificationTapped(notification);
+            }
         }
     }
 }

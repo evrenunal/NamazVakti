@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Plugin.LocalNotification.Platform.Droid;
+using Android.Content;
 
 namespace NamazVakti.Droid
 {
@@ -20,6 +22,8 @@ namespace NamazVakti.Droid
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            LocalNotificationService.NotificationIconId = Resource.Drawable.mosque;
+            LocalNotificationService.NotifyNotificationTapped(Intent);
             LoadApplication(new App());
         }
 
@@ -28,6 +32,12 @@ namespace NamazVakti.Droid
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        protected override void OnNewIntent(Intent intent)
+        {
+            LocalNotificationService.NotifyNotificationTapped(intent);
+            base.OnNewIntent(intent);
         }
     }
 }
