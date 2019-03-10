@@ -1,4 +1,5 @@
-﻿using NamazVakti.Services;
+﻿using NamazVakti.Models;
+using NamazVakti.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,8 +12,9 @@ namespace NamazVakti.ViewModel
 {
     public class MainViewModel:INotifyPropertyChanged
     {
-        private readonly Organizer organizer;
+        internal readonly Organizer organizer;
         private readonly IJobService deps;
+
         private bool runing;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -21,9 +23,6 @@ namespace NamazVakti.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public ICommand StartService { get; private set; }
-        public ICommand StopService { get; private set; }
         
         public MainViewModel()
         {
@@ -31,35 +30,113 @@ namespace NamazVakti.ViewModel
 
             deps = DependencyService.Get<IJobService>();
 
-            StartService = new Command(StartListener);
-            StopService = new Command(StopListener);
+          
+          
         }
 
-        private string _alertMessage;
-        public string AlertMessage
+        private double _interval;
+        public double Interval
         {
             get
             {
-                return _alertMessage;
+                return _interval;
             }
             set
             {
-                if (_alertMessage != value)
+                if (_interval != value)
                 {
-                    _alertMessage = value;
+                    _interval = value;
+                    StopListener();
+                    StartListener((int)_interval);
+                    var currentSettings = LocalSettings.GetFromProperties(new LocalSettings());
+                    if(currentSettings.RunIntervalInMinutes != (int)_interval)
+                    {
+                        currentSettings.RunIntervalInMinutes = (int)_interval;
+                        LocalSettings.SaveSettings(currentSettings);
+                    }
                     NotifyPropertyChanged();
                 }
             }
         }
 
-        private void StopListener(object obj)
+        private string _prayerTimeKind;
+        public string PrayerTimeKind
+        {
+            get
+            {
+                return _prayerTimeKind;
+            }
+            set
+            {
+                if (_prayerTimeKind != value)
+                {
+                    _prayerTimeKind = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private string _remainingTime;
+        public string RemainingTime
+        {
+            get
+            {
+                return _remainingTime;
+            }
+            set
+            {
+                if (_remainingTime != value)
+                {
+                    _remainingTime = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        } 
+       
+        public DateTime PrayerTimeEndline { get; set; }
+
+        private bool _alertOpen;
+        public bool AlertOpen
+        {
+            get
+            {
+                return _alertOpen;
+            }
+            set
+            {
+                if (_alertOpen != value)
+                {
+                    _alertOpen = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private bool _prayerPerformed;
+        public bool PrayerPerformed
+        {
+            get
+            {
+                return _prayerPerformed;
+            }
+            set
+            {
+                if (_prayerPerformed != value)
+                {
+                    _prayerPerformed = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        internal void StopListener()
         {
             deps.StopJob();
             MessagingCenter.Unsubscribe<object, string>(this, "trigger");
             runing = false;
         }
 
-        private void StartListener(object obj)
+        internal void StartListener(int interval)
         {
             MessagingCenter
                .Subscribe<object, string>(this, "trigger", (s, e) =>
@@ -70,7 +147,7 @@ namespace NamazVakti.ViewModel
                    });
                });
 
-            deps.StartJob(5);
+            deps.StartJob(interval);
 
             runing = true;
         }

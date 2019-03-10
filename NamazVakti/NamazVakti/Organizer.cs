@@ -19,6 +19,7 @@ namespace NamazVakti
         private readonly ViewModel.MainViewModel mainViewModel;
         private static ISettings AppSettings;
         private string defaultIlce = "9225";
+        private PrayTimeKind prayTimeKind;
         const string fileName = "MonthlyPrayTimes";
 
         public Organizer(ViewModel.MainViewModel mainViewModel)
@@ -55,26 +56,58 @@ namespace NamazVakti
             var tomorrowData = dailyTimes.FirstOrDefault(dd => dd.Date == cycleStartTm.Date.AddDays(1));
 
             if (DateTime.Now.Date > cycleStartTm.Date) RunCycle();//if the day passed since the method started
-
+             
             switch (DateTime.Now.TimeOfDay)
-            {
-               
+            {               
                 case var now when todaysData.Imsak.TimeOfDay < now && now < todaysData.Gunes.TimeOfDay:
-                    AlertUser("Sabah", todaysData.Gunes.TimeOfDay - now);
+                    if (prayTimeKind != PrayTimeKind.Sabah)
+                    {
+                        mainViewModel.PrayerPerformed = false;
+                        prayTimeKind = PrayTimeKind.Sabah;
+                    }                   
+                    mainViewModel.PrayerTimeEndline = todaysData.Gunes;
                     break;
                 case var now when todaysData.Ogle.TimeOfDay < now && now < todaysData.Ikindi.TimeOfDay:
-                    AlertUser("Öğle", todaysData.Ikindi.TimeOfDay - now);
-                    break;
+                    if (prayTimeKind != PrayTimeKind.Ogle)
+                    {
+                        mainViewModel.PrayerPerformed = false;
+                        prayTimeKind = PrayTimeKind.Ogle;
+                    }                    
+                    mainViewModel.PrayerTimeEndline = todaysData.Ikindi;
+                    break;                   
                 case var now when todaysData.Ikindi.TimeOfDay < now && now < todaysData.Aksam.TimeOfDay:
-                    AlertUser("İkindi", todaysData.Aksam.TimeOfDay - now);
+                    if (prayTimeKind != PrayTimeKind.Ikindi)
+                    {
+                        mainViewModel.PrayerPerformed = false;
+                        prayTimeKind = PrayTimeKind.Ikindi;
+                    }                    
+                    mainViewModel.PrayerTimeEndline = todaysData.Aksam;
                     break;
                 case var now when todaysData.Aksam.TimeOfDay < now && now < todaysData.Yatsi.TimeOfDay:
-                    AlertUser("Akşam", todaysData.Yatsi.TimeOfDay - now);
+                    if (prayTimeKind != PrayTimeKind.Aksam)
+                    {
+                        mainViewModel.PrayerPerformed = false;
+                        prayTimeKind = PrayTimeKind.Aksam;
+                    }                    
+                    mainViewModel.PrayerTimeEndline = todaysData.Yatsi;
                     break;
-                case var now when todaysData.Yatsi.TimeOfDay < now || now < tomorrowData.Imsak.TimeOfDay: 
-                    AlertUser("Yatsı",TimeSpan.FromHours(24) - now + tomorrowData.Imsak.TimeOfDay   );
+                case var now when todaysData.Yatsi.TimeOfDay < now || now < tomorrowData.Imsak.TimeOfDay:
+                    if (prayTimeKind != PrayTimeKind.Yatsi)
+                    {
+                        mainViewModel.PrayerPerformed = false;
+                        prayTimeKind = PrayTimeKind.Yatsi;
+                    }
+                    mainViewModel.PrayerTimeEndline = tomorrowData.Imsak;
                     break;
+
+                default: return;
             }
+
+           var remainingTime = mainViewModel.PrayerTimeEndline - DateTime.Now;
+            if (mainViewModel.AlertOpen && !mainViewModel.PrayerPerformed)
+                AlertUser(prayTimeKind, remainingTime);
+
+            mainViewModel.PrayerTimeKind = prayTimeKind.Stringify();            
         }
 
         private DailyTimes[] PullMonthlyData()
@@ -90,12 +123,11 @@ namespace NamazVakti
             return dailyTimes;
         }
 
-        private void AlertUser(string prayKind, TimeSpan remainingTime)
+        private void AlertUser(PrayTimeKind prayKind, TimeSpan remainingTime)
         {
             var message =
-                  $"{ prayKind} namazi vaktinin çıkması için kalan süre: {remainingTime.Hours}:{remainingTime.Minutes}" +
+                  $"{ prayKind.Stringify()} namazi vaktinin çıkması için kalan süre: {remainingTime.Hours}:{remainingTime.Minutes}" +
                   $"{Environment.NewLine}Bildirim Zamanı: {DateTime.Now.ToString("HH:mm")}";
-
              
             var notification = new Plugin.LocalNotification.LocalNotification
             {
@@ -106,8 +138,6 @@ namespace NamazVakti
               //  NotifyTime = DateTime.Now// Used for Scheduling local notification.
             };
             notificationService.Show(notification);
-
-            mainViewModel.AlertMessage = message;
         }
     }
 }

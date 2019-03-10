@@ -30,5 +30,26 @@ namespace NamazVakti
                 return timeData.MiladiTarihUzunIso8601.AddHours(time[0]).AddMinutes(time[1]);
             }
         }
+
+        public static string Stringify(this PrayTimeKind prayTimeKind)
+        {
+            switch (prayTimeKind)
+            {
+                case PrayTimeKind.Sabah:
+                    return "Sabah";
+                case PrayTimeKind.Ogle:
+                    return "Öğle";
+                case PrayTimeKind.Ikindi:
+                    return "İkindi";
+                case PrayTimeKind.Aksam:
+                    return "Akşam";
+                case PrayTimeKind.Yatsi:
+                    return "Yatsı";
+            }
+
+            return null;
+        }
+
+      
     }
 }

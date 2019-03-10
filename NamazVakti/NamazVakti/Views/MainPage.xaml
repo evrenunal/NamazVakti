@@ -6,9 +6,31 @@
              >
     <ContentPage.Content>
         <StackLayout>
-            <Button Text="Başlat" Command="{Binding StartService}"/>
-            <Button Text="Durdur" Command="{Binding StopService}"/>
-            <Label Text="{Binding AlertMessage, Mode=TwoWay}" FontAttributes="Bold" FontSize="Large"/>
+
+            <StackLayout>
+                <Label Text="{Binding PrayerTimeKind,StringFormat='&quot;{0}&quot; vaktine kalan süre:'}" FontAttributes="Bold" FontSize="Large"/>
+                <Label Text="{Binding RemainingTime}" FontAttributes="Bold" FontSize="Large"/>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Uyari Notu Acik/Kapali"/>
+                <Switch IsToggled="{Binding AlertOpen, Mode=TwoWay}"/>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Kılındı"/>
+                <Switch IsToggled="{Binding PrayerPerformed, Mode=TwoWay}"/>
+            </StackLayout>
+            <StackLayout>
+                <Stepper x:Name="_stepper" Value="{Binding Interval, Mode=TwoWay}"
+                 Maximum="15"
+                 Increment="1"
+                 Minimum="1"
+                 HorizontalOptions="Center" />
+                <Label Text="{Binding Source={x:Reference _stepper}, Path=Value, StringFormat='Kontrol araligi: {0:F0} dk.'}"
+               HorizontalOptions="Center"
+               VerticalOptions="CenterAndExpand" />
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
