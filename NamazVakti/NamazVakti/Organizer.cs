@@ -53,7 +53,10 @@ namespace NamazVakti
             }
 
             var todaysData = dailyTimes.FirstOrDefault(dd => dd.Date == cycleStartTm.Date);
+
+            mainViewModel.TimeTable = todaysData;
             var tomorrowData = dailyTimes.FirstOrDefault(dd => dd.Date == cycleStartTm.Date.AddDays(1));
+
 
             if (DateTime.Now.Date > cycleStartTm.Date) RunCycle();//if the day passed since the method started
              
@@ -100,14 +103,20 @@ namespace NamazVakti
                     mainViewModel.PrayerTimeEndline = tomorrowData.Imsak;
                     break;
 
-                default: return;
+                default: mainViewModel.PrayerTimeEndline = DateTime.MaxValue;
+                    prayTimeKind = PrayTimeKind.None;
+                    break;
             }
+            mainViewModel.PrayerTimeKind = prayTimeKind;
+            mainViewModel.KilindiSwEnabled = prayTimeKind != PrayTimeKind.None;
 
-           var remainingTime = mainViewModel.PrayerTimeEndline - DateTime.Now;
+            if (prayTimeKind == PrayTimeKind.None) return;
+
+            var remainingTime = mainViewModel.PrayerTimeEndline - DateTime.Now;
             if (mainViewModel.AlertOpen && !mainViewModel.PrayerPerformed)
                 AlertUser(prayTimeKind, remainingTime);
 
-            mainViewModel.PrayerTimeKind = prayTimeKind.Stringify();            
+                     
         }
 
         private DailyTimes[] PullMonthlyData()

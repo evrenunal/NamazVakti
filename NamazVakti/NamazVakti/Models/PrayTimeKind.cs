@@ -6,6 +6,7 @@ namespace NamazVakti.Models
 {
     public enum PrayTimeKind
     {
+        None,
         Sabah,
         Ogle,
         Ikindi,

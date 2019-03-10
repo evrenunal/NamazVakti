@@ -59,18 +59,36 @@ namespace NamazVakti.ViewModel
             }
         }
 
-        private string _prayerTimeKind;
-        public string PrayerTimeKind
+        private bool _kilindiSwEnabled;
+        public bool KilindiSwEnabled
         {
             get
             {
-                return _prayerTimeKind;
+                return _kilindiSwEnabled;
             }
             set
             {
-                if (_prayerTimeKind != value)
+                if (_kilindiSwEnabled != value)
                 {
-                    _prayerTimeKind = value;
+                    _kilindiSwEnabled = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public DateTime PrayerTimeEndline { get; set; }
+        public PrayTimeKind PrayerTimeKind { get; set; }
+        private string _prayerTimeText;
+        public string PrayerTimeText
+        {
+            get
+            {
+                return _prayerTimeText;
+            }
+            set
+            {
+                if (_prayerTimeText != value)
+                {
+                    _prayerTimeText = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -92,8 +110,6 @@ namespace NamazVakti.ViewModel
                 }
             }
         } 
-       
-        public DateTime PrayerTimeEndline { get; set; }
 
         private bool _alertOpen;
         public bool AlertOpen
@@ -129,6 +145,22 @@ namespace NamazVakti.ViewModel
             }
         }
 
+        private DailyTimes _timeTable;
+        public DailyTimes TimeTable
+        {
+            get
+            {
+                return _timeTable;
+            }
+            set
+            {
+                if (_timeTable != value)
+                {
+                    _timeTable = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         internal void StopListener()
         {
             deps.StopJob();

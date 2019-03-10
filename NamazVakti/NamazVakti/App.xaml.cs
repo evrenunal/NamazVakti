@@ -31,19 +31,18 @@ namespace NamazVakti
         }
 
         public void StartTimer()
-        {
-           
+        {           
             Device.StartTimer(TimeSpan.FromSeconds(1), () =>
             {
-                try
+
+                if (mainPage.viewModel.PrayerTimeKind != PrayTimeKind.None)
                 {
-                    var remainingTime=mainPage.viewModel.PrayerTimeEndline - DateTime.Now;
-                    mainPage.viewModel.RemainingTime = remainingTime.ToString(@"hh\:mm"); 
-                }
-                catch 
-                {                   
-                    mainPage.viewModel.RemainingTime = TimeSpan.MaxValue.ToString(@"hh\:mm"); 
-                }
+                    var remainingTime = mainPage.viewModel.PrayerTimeEndline - DateTime.Now;
+                    mainPage.viewModel.RemainingTime = remainingTime.ToString(@"hh\:mm");
+                    mainPage.viewModel.PrayerTimeText = mainPage.viewModel.PrayerTimeKind.Stringify()
+                    + " vaktinin çıkmasına kalan süre:";
+                }       
+
                 return true;
             });
         }

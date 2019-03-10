@@ -2,22 +2,58 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NamazVakti.Views.MainPage"
-             Title="Namaz Vakti"
-             >
+              xmlns:local="clr-namespace:NamazVakti" 
+             Title="Namaz Vakti">
+
+
+    
     <ContentPage.Content>
         <StackLayout>
+            <TableView>
+                <TableRoot>
+                    <TableSection>
+                        <TextCell Text="{Binding PrayerTimeText}"
+                                  Detail="{Binding RemainingTime}"  />
+                        <SwitchCell On="{Binding PrayerPerformed, Mode=TwoWay}" Text="Kılındı" 
+                                    IsEnabled="{Binding KilindiSwEnabled}" />
+                    </TableSection>
+                    <TableSection Title="Ezan Vakitleri">
+                        <TextCell Text="Sabah" Detail="{Binding TimeTable.Imsak, StringFormat='{}{0:hh:mm:ss}'}" />
+                        <TextCell Text="Öğle"  Detail="{Binding TimeTable.Ogle, StringFormat='{}{0:hh:mm:ss}'}"/>
+                        <TextCell Text="İkindi" Detail="{Binding TimeTable.Ikindi, StringFormat='{}{0:hh:mm:ss}'}"/>
+                        <TextCell Text="Akşam"  Detail="{Binding TimeTable.Aksam, StringFormat='{}{0:hh:mm:ss}'}"/>
+                        <TextCell Text="Yatsı"  Detail="{Binding TimeTable.Yatsi, StringFormat='{}{0:hh:mm:ss}'}"/>
+                        <TextCell Text="Tarih"  Detail="{Binding TimeTable.Date, StringFormat='{}{0:yyyy-MM-dd}'}"/>
+                    </TableSection>
+                    <TableSection Title="Ayarlar">
+                        <SwitchCell On="{Binding AlertOpen, Mode=TwoWay}" Text="Uyari Notu Acik/Kapali"  />                      
+                    </TableSection>
+
+                </TableRoot>
+            </TableView>
+            <StackLayout Orientation="Horizontal">
+                <Stepper x:Name="_stepper" Value="{Binding Interval, Mode=TwoWay}"
+                 Maximum="15"
+                 Increment="1"
+                 Minimum="1" />
+                <Label Text="{Binding Source={x:Reference _stepper}, Path=Value, StringFormat='Kontrol araligi: {0:F0} dk.'}"
+                       VerticalOptions="Center"/>
+            </StackLayout>
+        </StackLayout>
+
+        <!--<StackLayout>
 
             <StackLayout>
                 <Label Text="{Binding PrayerTimeKind,StringFormat='&quot;{0}&quot; vaktine kalan süre:'}" FontAttributes="Bold" FontSize="Large"/>
                 <Label Text="{Binding RemainingTime}" FontAttributes="Bold" FontSize="Large"/>
             </StackLayout>
 
-            <StackLayout>
+            <StackLayout Orientation="Horizontal">
                 <Label Text="Uyari Notu Acik/Kapali"/>
                 <Switch IsToggled="{Binding AlertOpen, Mode=TwoWay}"/>
             </StackLayout>
 
-            <StackLayout>
+            <StackLayout Orientation="Horizontal">
                 <Label Text="Kılındı"/>
                 <Switch IsToggled="{Binding PrayerPerformed, Mode=TwoWay}"/>
             </StackLayout>
@@ -31,6 +67,6 @@
                HorizontalOptions="Center"
                VerticalOptions="CenterAndExpand" />
             </StackLayout>
-        </StackLayout>
+        </StackLayout>-->
     </ContentPage.Content>
 </ContentPage>
