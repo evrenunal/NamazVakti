@@ -1,10 +1,12 @@
 ﻿using NamazVakti.Models;
 using NamazVakti.Services;
+using NamazVakti.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -14,6 +16,7 @@ namespace NamazVakti.ViewModel
     {
         internal readonly Organizer organizer;
         private readonly IJobService deps;
+        public ICommand SettingsPage { get; private set; }
 
         private bool runing;
 
@@ -29,34 +32,17 @@ namespace NamazVakti.ViewModel
             organizer = new Organizer(this);         
 
             deps = DependencyService.Get<IJobService>();
-
+            SettingsPage = new Command(async() => await OpenSettingsPage());
           
           
         }
 
-        private double _interval;
-        public double Interval
+        private  async Task OpenSettingsPage()
         {
-            get
-            {
-                return _interval;
-            }
-            set
-            {
-                if (_interval != value)
-                {
-                    _interval = value;
-                    StopListener();
-                    StartListener((int)_interval);
-                    var currentSettings = LocalSettings.GetFromProperties(new LocalSettings());
-                    if(currentSettings.RunIntervalInMinutes != (int)_interval)
-                    {
-                        currentSettings.RunIntervalInMinutes = (int)_interval;
-                        LocalSettings.SaveSettings(currentSettings);
-                    }
-                    NotifyPropertyChanged();
-                }
-            }
+         
+           var navigationPage = (NavigationPage)App.Current.MainPage;
+          await navigationPage.PushAsync(new SettingsPage());
+         
         }
 
         private bool _kilindiSwEnabled;

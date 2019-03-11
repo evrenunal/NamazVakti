@@ -18,7 +18,7 @@ namespace NamazVakti
         private readonly ILocalNotificationService notificationService;
         private readonly ViewModel.MainViewModel mainViewModel;
         private static ISettings AppSettings;
-        private string defaultIlce = "9225";
+       
         private PrayTimeKind prayTimeKind;
         const string fileName = "MonthlyPrayTimes";
 
@@ -114,15 +114,14 @@ namespace NamazVakti
 
             var remainingTime = mainViewModel.PrayerTimeEndline - DateTime.Now;
             if (mainViewModel.AlertOpen && !mainViewModel.PrayerPerformed)
-                AlertUser(prayTimeKind, remainingTime);
-
-                     
+                AlertUser(prayTimeKind, remainingTime);                     
         }
 
         private DailyTimes[] PullMonthlyData()
         {
             DailyTimes[] dailyTimes;
-            var ilceKod = AppSettings.GetValueOrDefault(nameof(LocationParams.ilce), defaultIlce);
+
+            var ilceKod = LocalSettings.GetCurrent().AbsolutePlace.Town.IlceID;           
             var monthlyData = nmzApi.GetMonthlyPrayerTimes(ilceKod);
             dailyTimes = monthlyData.Select(s => s.Map()).ToArray();
 

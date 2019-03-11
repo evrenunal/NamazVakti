@@ -7,29 +7,36 @@ namespace NamazVakti.Models
 {
     public class LocalSettings
     {
-        public int RunIntervalInMinutes { get; internal set; }
+        public AbsolutePlace AbsolutePlace { get;  set; }
+        public bool AlertUser { get; set; }
+        public int Interval { get;  set; }
 
-       public static LocalSettings GetFromProperties(LocalSettings defaults)
+        public static LocalSettings GetCurrent()
         {
 
-            var properties = Application.Current.Properties;
+            var properties = Application.Current.Properties.ContainsKey("settings")
+                ? Application.Current.Properties["settings"] as LocalSettings
+                : new LocalSettings
+                {
+                    AbsolutePlace = new AbsolutePlace
+                    {
+                        City = new Sehir(),
+                        Country = new Ulke(),
+                        Town = new Ilce
+                        {
+                            IlceID = "9225"
+                        }
+                    },
+                    AlertUser = true,
+                    Interval = 5
+                };
 
-            int runIntervalInMinutes =  (properties.ContainsKey(nameof(LocalSettings.RunIntervalInMinutes)))
-                ?(int)properties[nameof(LocalSettings.RunIntervalInMinutes)]
-                : defaults.RunIntervalInMinutes;
-            
-            return new LocalSettings
-            {
-                RunIntervalInMinutes = runIntervalInMinutes
-            };
+            return properties;
         }
 
         public static void SaveSettings(LocalSettings settings)
         {
-            Application.Current.Properties[nameof(settings.RunIntervalInMinutes)] = settings.RunIntervalInMinutes;
+            Application.Current.Properties["settings"] = settings;
         }
     }
-
-
-
 }

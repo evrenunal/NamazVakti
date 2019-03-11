@@ -18,12 +18,10 @@ namespace NamazVakti.Views
 
         public MainPage ()
 		{
-             viewModel = new MainViewModel();
+            viewModel = new MainViewModel();
             BindingContext = viewModel;
 
-            InitializeComponent ();
-          
-        }
-        
+            InitializeComponent();          
+        }        
     }
 }

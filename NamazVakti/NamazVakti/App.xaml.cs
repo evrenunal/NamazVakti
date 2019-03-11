@@ -49,16 +49,9 @@ namespace NamazVakti
 
         protected override void OnStart()
         {
-            // mainPage.viewModel.organizer.RunCycle();
-
-            var defaultSettings = new LocalSettings
-            {
-                RunIntervalInMinutes=5
-            };
-
-            LocalSettings settings =  LocalSettings.GetFromProperties(defaultSettings);
+            LocalSettings settings =  LocalSettings.GetCurrent();
             
-            mainPage.viewModel.StartListener(settings.RunIntervalInMinutes);
+            mainPage.viewModel.StartListener(settings.Interval);
             StartTimer();
         }
         
@@ -72,8 +65,5 @@ namespace NamazVakti
         {
             
         }
-
-        
-        
     }
 }

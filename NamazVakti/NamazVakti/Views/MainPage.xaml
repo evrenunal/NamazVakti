@@ -3,10 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NamazVakti.Views.MainPage"
               xmlns:local="clr-namespace:NamazVakti" 
-             Title="Namaz Vakti">
-
-
-    
+             Title="Namaz Vakti">    
     <ContentPage.Content>
         <StackLayout>
             <TableView>
@@ -25,48 +22,24 @@
                         <TextCell Text="Yatsı"  Detail="{Binding TimeTable.Yatsi, StringFormat='{}{0:hh:mm:ss}'}"/>
                         <TextCell Text="Tarih"  Detail="{Binding TimeTable.Date, StringFormat='{}{0:yyyy-MM-dd}'}"/>
                     </TableSection>
-                    <TableSection Title="Ayarlar">
-                        <SwitchCell On="{Binding AlertOpen, Mode=TwoWay}" Text="Uyari Notu Acik/Kapali"  />                      
-                    </TableSection>
+                    
+                    <!--<TableSection Title="Ayarlar">
+                        <SwitchCell On="{Binding AlertOpen, Mode=TwoWay}" Text="Uyari Notu Acik/Kapali"  />
+                    </TableSection>-->
 
                 </TableRoot>
             </TableView>
             <StackLayout Orientation="Horizontal">
-                <Stepper x:Name="_stepper" Value="{Binding Interval, Mode=TwoWay}"
+                <!--<Stepper x:Name="_stepper" Value="{Binding Interval, Mode=TwoWay}"
                  Maximum="15"
                  Increment="1"
                  Minimum="1" />
                 <Label Text="{Binding Source={x:Reference _stepper}, Path=Value, StringFormat='Kontrol araligi: {0:F0} dk.'}"
-                       VerticalOptions="Center"/>
+                       VerticalOptions="Center"/>-->
+                <Label Text="Settings" VerticalOptions="CenterAndExpand" HorizontalOptions="End"/>
+                <!--<Button Command="{Binding SettingsPage}"  />-->
+                <ImageButton  Source="settings.png" Command="{Binding SettingsPage}" VerticalOptions="CenterAndExpand" HorizontalOptions="Fill"/>
             </StackLayout>
         </StackLayout>
-
-        <!--<StackLayout>
-
-            <StackLayout>
-                <Label Text="{Binding PrayerTimeKind,StringFormat='&quot;{0}&quot; vaktine kalan süre:'}" FontAttributes="Bold" FontSize="Large"/>
-                <Label Text="{Binding RemainingTime}" FontAttributes="Bold" FontSize="Large"/>
-            </StackLayout>
-
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Uyari Notu Acik/Kapali"/>
-                <Switch IsToggled="{Binding AlertOpen, Mode=TwoWay}"/>
-            </StackLayout>
-
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Kılındı"/>
-                <Switch IsToggled="{Binding PrayerPerformed, Mode=TwoWay}"/>
-            </StackLayout>
-            <StackLayout>
-                <Stepper x:Name="_stepper" Value="{Binding Interval, Mode=TwoWay}"
-                 Maximum="15"
-                 Increment="1"
-                 Minimum="1"
-                 HorizontalOptions="Center" />
-                <Label Text="{Binding Source={x:Reference _stepper}, Path=Value, StringFormat='Kontrol araligi: {0:F0} dk.'}"
-               HorizontalOptions="Center"
-               VerticalOptions="CenterAndExpand" />
-            </StackLayout>
-        </StackLayout>-->
     </ContentPage.Content>
 </ContentPage>
