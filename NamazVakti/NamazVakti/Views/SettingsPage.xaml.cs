@@ -13,16 +13,25 @@ namespace NamazVakti.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SettingsPage : ContentPage
 	{
-		public SettingsPage()
+        private SettingsViewModel viewModel;
+
+        public SettingsPage()
 		{
-            BindingContext = new SettingsViewModel();
-			InitializeComponent();
+            viewModel = new SettingsViewModel();
+            BindingContext = viewModel;
+
+            InitializeComponent();
 		}
         
 
         private void CountriesPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
+            viewModel.CountryIndexChanged(e);
+        }
 
+        private void CitiesPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            viewModel.CityIndexChanged(e);
         }
     }
 }

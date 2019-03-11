@@ -15,21 +15,35 @@
                         ItemsSource="{Binding Countries}"
                         ItemDisplayBinding="{Binding UlkeAdi}"
                 SelectedIndexChanged="CountriesPicker_SelectedIndexChanged">
-
                 </Picker>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="You chose:" />
-                    <Label x:Name="monkeyNameLabel" />
-                </StackLayout>
             </StackLayout>
-            
-            
 
-            
+            <StackLayout Margin="20,35,20,20">
+                <Label Text="Şehir Seçin" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center" />
+                <Picker x:Name="CitiesPicker"
+                        Title="Select City"
+                        SelectedItem="{Binding SelectedCity}"
+                        ItemsSource="{Binding Cities}"
+                        ItemDisplayBinding="{Binding SehirAdi}"
+                SelectedIndexChanged="CitiesPicker_SelectedIndexChanged">
+                </Picker>
+            </StackLayout>
+
+            <StackLayout Margin="20,35,20,20">
+                <Label Text="İlçe Seçin" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center" />
+                <Picker x:Name="TownsPicker"
+                        Title="Select City"
+                        SelectedItem="{Binding SelectedTown}"
+                        ItemsSource="{Binding Towns}"
+                        ItemDisplayBinding="{Binding IlceAdi}"  >
+                </Picker>
+            </StackLayout>
+
         </StackLayout>
-
-
-
         <StackLayout Orientation="Horizontal">
             <Stepper x:Name="_stepper" Value="{Binding Interval, Mode=TwoWay}"
                  Maximum="15"
@@ -37,7 +51,7 @@
                  Minimum="1" />
             <Label Text="{Binding Source={x:Reference _stepper}, Path=Value, StringFormat='Kontrol araligi: {0:F0} dk.'}"
                        VerticalOptions="Center"/>
-            <ImageButton Source="settings.png" Command="{Binding SettingsPage}"/>
+            <Button Text="Kaydet" Command="{Binding SettingsPage}"/>
         </StackLayout>
     </StackLayout>
 </ContentPage>

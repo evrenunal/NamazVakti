@@ -20,7 +20,29 @@ namespace NamazVakti.ViewModel
         public ObservableCollection<Sehir> Cities { get; set; }
         public ObservableCollection<Ilce> Towns { get; set; }
 
-        private readonly NamazApiService namazApi;       
+        private readonly NamazApiService namazApi;
+
+        internal void CountryIndexChanged(EventArgs e)
+        {
+            var cities = namazApi.GetCities(SelectedCountry.UlkeID);
+
+            Cities.Clear();
+            cities.ForEach(c => Cities.Add(c));
+
+            Towns.Clear();
+        }
+
+        internal void CityIndexChanged(EventArgs e)
+        {
+            var towns = namazApi.GetTowns(SelectedCity.SehirID);
+
+            Towns.Clear();
+            towns.ForEach(t => Towns.Add(t));
+
+            var cityCenter = Towns.FirstOrDefault(t => t.IlceAdi == SelectedCity.SehirAdi);
+
+            SelectedTown = cityCenter;
+        }
 
         public ICommand Save { get; set; }
 
