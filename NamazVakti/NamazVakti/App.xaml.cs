@@ -44,7 +44,7 @@ namespace NamazVakti
                 if (mainPage.viewModel.PrayerTimeKind != PrayTimeKind.None)
                 {
                     var remainingTime = mainPage.viewModel.PrayerTimeEndline - DateTime.Now;
-                    mainPage.viewModel.RemainingTime = remainingTime.ToString(@"hh\:mm");
+                    mainPage.viewModel.RemainingTime = remainingTime.ToString(@"hh\:mm\:ss");
                     mainPage.viewModel.PrayerTimeText = mainPage.viewModel.PrayerTimeKind.Stringify()
                     + " vaktinin çıkmasına kalan süre:";
                 }       
