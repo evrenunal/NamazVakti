@@ -5,6 +5,7 @@ using NamazVakti.Models;
 using NamazVakti.Views;
 using Plugin.LocalNotification;
 using System;
+using System.Collections.Generic;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -40,7 +41,6 @@ namespace NamazVakti
         {
             Xamarin.Forms.Device.StartTimer(TimeSpan.FromSeconds(1), () =>
             {
-
                 if (mainPage.viewModel.PrayerTimeKind != PrayTimeKind.None)
                 {
                     var remainingTime = mainPage.viewModel.PrayerTimeEndline - DateTime.Now;
@@ -48,7 +48,6 @@ namespace NamazVakti
                     mainPage.viewModel.PrayerTimeText = mainPage.viewModel.PrayerTimeKind.Stringify()
                     + " vaktinin çıkmasına kalan süre:";
                 }       
-
                 return true;
             });
         }
@@ -56,7 +55,11 @@ namespace NamazVakti
         protected override void OnStart()
         {
             AppCenter.Start("ios=6e72f21c-f13e-4204-8a94-43f7c64aa766;" + "android=a78c0c5d-7cee-4102-8c21-83929ee9e60f", typeof(Analytics), typeof(Crashes));
-
+            Analytics.TrackEvent("App Started",
+                new Dictionary<string, string>
+                {
+                    ["date"] = DateTime.Now.ToString()
+                });
             StartTimer();
         }
         
