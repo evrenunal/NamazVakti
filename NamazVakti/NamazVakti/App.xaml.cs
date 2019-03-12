@@ -1,4 +1,7 @@
-﻿using NamazVakti.Models;
+﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using NamazVakti.Models;
 using NamazVakti.Views;
 using Plugin.LocalNotification;
 using System;
@@ -52,9 +55,8 @@ namespace NamazVakti
 
         protected override void OnStart()
         {
-            //LocalSettings settings =  LocalSettings.GetCurrent();
-            
-            //mainPage.viewModel.StartListener(settings.Interval);
+            AppCenter.Start("ios=6e72f21c-f13e-4204-8a94-43f7c64aa766;" + "android={a78c0c5d-7cee-4102-8c21-83929ee9e60f}", typeof(Analytics), typeof(Crashes));
+
             StartTimer();
         }
         
