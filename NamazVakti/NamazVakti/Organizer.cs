@@ -167,7 +167,7 @@ namespace NamazVakti
         private void AlertUser(PrayTimeKind prayKind, TimeSpan remainingTime)
         {
             var message =
-                  $"{ prayKind.Stringify()} namazi vaktinin çıkması için kalan süre: {remainingTime.Hours}:{remainingTime.Minutes}" +
+                  $"{prayKind.Stringify()} namazi vaktinin çıkması için kalan süre: {remainingTime.Hours}:{remainingTime.Minutes}:{remainingTime.Seconds}" +
                   $"{Environment.NewLine}Bildirim Zamanı: {DateTime.Now.ToString("HH:mm")}";
              
             var notification = new Plugin.LocalNotification.LocalNotification
