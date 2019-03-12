@@ -13,7 +13,7 @@ using Microsoft.AppCenter.Crashes;
 
 namespace NamazVakti.Droid
 {
-    [Activity(Label = "NamazVakti", Icon = "@drawable/mosque", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "NamazVakti", Icon = "@drawable/mosque", Theme = "@style/MainTheme", LaunchMode =LaunchMode.SingleInstance,  MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
