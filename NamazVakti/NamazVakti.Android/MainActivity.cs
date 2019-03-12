@@ -20,9 +20,10 @@ namespace NamazVakti.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-            
-            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+
+            //AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;            
+            //TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
