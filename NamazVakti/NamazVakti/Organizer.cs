@@ -42,7 +42,8 @@ namespace NamazVakti
 
             if (!success)
             {
-                await CheckConnection();
+                var ok = await CheckConnection2();
+                if (!ok) return;
                 dailyTimes = PullMonthlyData();
 
             }
@@ -52,7 +53,8 @@ namespace NamazVakti
 
                 if(!dailyTimes.Any(dt =>dt.Date> cycleStartTm.Date))
                 {
-                    await CheckConnection();
+                    var ok = await CheckConnection2();
+                    if (!ok) return;
                     dailyTimes = PullMonthlyData();
                 }                   
             }
@@ -127,12 +129,25 @@ namespace NamazVakti
             strg.DeleteFile(fileName);
         }
 
-        private static async System.Threading.Tasks.Task CheckConnection()
+        internal static async System.Threading.Tasks.Task CheckConnection()
         {
+
             while (Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await App.Current.MainPage.DisplayAlert("No Internet", "Lutfen internet Baglantısını açın", "OK");
+              await App.Current.MainPage.DisplayAlert("No Internet", "Lutfen internet Baglantısını açın", "OK");
             }
+        }
+        internal static async System.Threading.Tasks.Task<bool> CheckConnection2()
+        {
+           
+            while (Connectivity.NetworkAccess != NetworkAccess.Internet )
+            {
+              var  ok = await App.Current.MainPage.DisplayAlert("No Internet", "Lutfen internet Baglantısını açın", "OK", "Cancel");
+
+                if (!ok) break;
+            }
+
+            return Connectivity.NetworkAccess == NetworkAccess.Internet;
         }
 
         private DailyTimes[] PullMonthlyData()

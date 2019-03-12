@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -63,6 +64,8 @@ namespace NamazVakti.ViewModel
             LoadCurrents(settings.AbsolutePlace);
         }
 
+      
+       
         private string GetLocation(LocalSettings settings)
         {
             return settings.AbsolutePlace.Country.UlkeAdi + " > " + settings.AbsolutePlace.City.SehirAdi + " > " + settings.AbsolutePlace.Town.IlceAdi;
@@ -122,9 +125,7 @@ namespace NamazVakti.ViewModel
                 AbsolutePlace=absoluteplace,
                 AlertUser=AlertUser,
                 Interval=Interval
-            };
-
-            
+            };            
 
             if (GetLocation( oldSettings) != GetLocation(newSettings))
             {

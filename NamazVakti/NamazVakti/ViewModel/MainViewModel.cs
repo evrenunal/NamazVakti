@@ -46,7 +46,7 @@ namespace NamazVakti.ViewModel
             StopListener();
             var settings = LocalSettings.GetCurrent();
 
-            StartListener(settings.Interval);
+            StartListener(settings.Interval);         
 
             var ilceAdi = (settings.AbsolutePlace.Town.IlceAdi == settings.AbsolutePlace.City.SehirAdi
                 ? "(Merkez)"
@@ -58,6 +58,9 @@ namespace NamazVakti.ViewModel
 
         private async Task OpenSettingsPage()
         {
+            var ok =   await Organizer.CheckConnection2();
+            if (!ok) return;
+
             var navigationPage = (NavigationPage)App.Current.MainPage;
             await navigationPage.PushAsync(new SettingsPage(this));
         }
@@ -206,7 +209,7 @@ namespace NamazVakti.ViewModel
                });
 
             deps.StartJob(interval);
-
+           
             runing = true;
         }
     }
