@@ -2,12 +2,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NamazVakti.Views.MainPage"
-              xmlns:local="clr-namespace:NamazVakti" 
              Title="Namaz Vakti">    
     <ContentPage.Content>
         <StackLayout>
             <TableView>
                 <TableRoot>
+                    <TableSection>
+                        <TextCell Text="{Binding Location}"/>
+                    </TableSection>
                     <TableSection>
                         <TextCell Text="{Binding PrayerTimeText}"
                                   Detail="{Binding RemainingTime}"  />

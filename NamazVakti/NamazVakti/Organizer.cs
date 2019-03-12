@@ -16,7 +16,7 @@ namespace NamazVakti
         private readonly StorageService strg;
         private readonly NamazApiService nmzApi;
         private readonly ILocalNotificationService notificationService;
-        private readonly ViewModel.MainViewModel mainViewModel;
+        private readonly ViewModel.MainViewModel mainViewModel;      
         private static ISettings AppSettings;
        
         private PrayTimeKind prayTimeKind;
@@ -29,18 +29,20 @@ namespace NamazVakti
             nmzApi = new NamazApiService();
             notificationService = DependencyService.Get<ILocalNotificationService>();
             this.mainViewModel = mainViewModel;
+           
         }
 
        
-        internal void RunCycle()
+        internal async void RunCycle()
         {
             var cycleStartTm = DateTime.Now;
 
             DailyTimes[] dailyTimes = null;
-            var (success, file) = strg.GetFile(fileName);
+            var (success, file) = strg.GetFile(fileName);          
 
             if (!success)
             {
+                await CheckConnection();
                 dailyTimes = PullMonthlyData();
 
             }
@@ -49,9 +51,12 @@ namespace NamazVakti
                 dailyTimes = JsonConvert.DeserializeObject<DailyTimes[]>(file);
 
                 if(!dailyTimes.Any(dt =>dt.Date> cycleStartTm.Date))
+                {
+                    await CheckConnection();
                     dailyTimes = PullMonthlyData();
+                }                   
             }
-
+            
             var todaysData = dailyTimes.FirstOrDefault(dd => dd.Date == cycleStartTm.Date);
 
             mainViewModel.TimeTable = todaysData;
@@ -115,6 +120,19 @@ namespace NamazVakti
             var remainingTime = mainViewModel.PrayerTimeEndline - DateTime.Now;
             if (mainViewModel.AlertOpen && !mainViewModel.PrayerPerformed)
                 AlertUser(prayTimeKind, remainingTime);                     
+        }
+
+        internal void DeletePrayerTimes()
+        {
+            strg.DeleteFile(fileName);
+        }
+
+        private static async System.Threading.Tasks.Task CheckConnection()
+        {
+            while (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await App.Current.MainPage.DisplayAlert("No Internet", "Lutfen internet Baglantısını açın", "OK");
+            }
         }
 
         private DailyTimes[] PullMonthlyData()

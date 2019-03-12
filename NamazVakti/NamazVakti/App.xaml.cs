@@ -2,6 +2,7 @@
 using NamazVakti.Views;
 using Plugin.LocalNotification;
 using System;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -22,8 +23,10 @@ namespace NamazVakti
 
             mainPage = new MainPage();
             MainPage = new NavigationPage(mainPage);
-          
+            
         }
+
+       
 
         private void OnLocalNotificationTapped(LocalNotificationTappedEvent obj)
         {
@@ -49,9 +52,9 @@ namespace NamazVakti
 
         protected override void OnStart()
         {
-            LocalSettings settings =  LocalSettings.GetCurrent();
+            //LocalSettings settings =  LocalSettings.GetCurrent();
             
-            mainPage.viewModel.StartListener(settings.Interval);
+            //mainPage.viewModel.StartListener(settings.Interval);
             StartTimer();
         }
         

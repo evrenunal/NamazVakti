@@ -33,9 +33,9 @@ namespace NamazVakti.Services
             File.WriteAllText(filePath, fileToSave);
         }
 
-        internal void DeleteFile(string lastMonthId)
+        internal void DeleteFile(string fileName)
         {
-            var filePath = Path.Combine(mainDir, lastMonthId);
+            var filePath = Path.Combine(mainDir, fileName);
             File.Delete(filePath);
         }
     }

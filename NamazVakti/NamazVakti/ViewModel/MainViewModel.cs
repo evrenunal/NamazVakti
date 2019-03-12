@@ -4,10 +4,12 @@ using NamazVakti.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace NamazVakti.ViewModel
@@ -18,6 +20,7 @@ namespace NamazVakti.ViewModel
         private readonly IJobService deps;
         public ICommand SettingsPage { get; private set; }
 
+       
         private bool runing;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -28,21 +31,52 @@ namespace NamazVakti.ViewModel
         }
         
         public MainViewModel()
-        {
+        {         
             organizer = new Organizer(this);         
 
             deps = DependencyService.Get<IJobService>();
             SettingsPage = new Command(async() => await OpenSettingsPage());
-          
-          
+
+
+            ReStart();
+         }
+
+        internal void ReStart()
+        {
+            StopListener();
+            var settings = LocalSettings.GetCurrent();
+
+            StartListener(settings.Interval);
+
+            var ilceAdi = (settings.AbsolutePlace.Town.IlceAdi == settings.AbsolutePlace.City.SehirAdi
+                ? "(Merkez)"
+               : settings.AbsolutePlace.Town.IlceAdi);
+            Location = settings.AbsolutePlace.City.SehirAdi + " > " + ilceAdi;
+               
+            AlertOpen = settings.AlertUser;
+        }    
+
+        private async Task OpenSettingsPage()
+        {
+            var navigationPage = (NavigationPage)App.Current.MainPage;
+            await navigationPage.PushAsync(new SettingsPage(this));
         }
 
-        private  async Task OpenSettingsPage()
+        private string _location;
+        public string Location
         {
-         
-           var navigationPage = (NavigationPage)App.Current.MainPage;
-          await navigationPage.PushAsync(new SettingsPage());
-         
+            get
+            {
+                return _location;
+            }
+            set
+            {
+                if (_location != value)
+                {
+                    _location = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         private bool _kilindiSwEnabled;
@@ -147,6 +181,12 @@ namespace NamazVakti.ViewModel
                 }
             }
         }
+
+        internal void DeletePrayerTimes()
+        {
+            organizer.DeletePrayerTimes();
+        }
+
         internal void StopListener()
         {
             deps.StopJob();

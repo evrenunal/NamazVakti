@@ -4,7 +4,9 @@
              x:Class="NamazVakti.Views.SettingsPage">
     <StackLayout>
         <StackLayout IsClippedToBounds="True" Margin="5,5,5,5" >
-
+            <StackLayout>
+                <Label Text="{Binding CurrentLocation}" />
+            </StackLayout>
             <StackLayout Margin="20,35,20,20">
                 <Label Text="Ulke Seçin" 
                FontAttributes="Bold" 
@@ -14,7 +16,7 @@
                         SelectedItem="{Binding SelectedCountry}"
                         ItemsSource="{Binding Countries}"
                         ItemDisplayBinding="{Binding UlkeAdi}"
-                SelectedIndexChanged="CountriesPicker_SelectedIndexChanged">
+                SelectedIndexChanged="CountriesPicker_SelectedIndexChanged"                       >
                 </Picker>
             </StackLayout>
 
@@ -26,8 +28,9 @@
                         Title="Select City"
                         SelectedItem="{Binding SelectedCity}"
                         ItemsSource="{Binding Cities}"
-                        ItemDisplayBinding="{Binding SehirAdi}"
-                SelectedIndexChanged="CitiesPicker_SelectedIndexChanged">
+                        ItemDisplayBinding="{Binding SehirAdi}"      
+                        SelectedIndexChanged="CitiesPicker_SelectedIndexChanged"
+                       >
                 </Picker>
             </StackLayout>
 
@@ -39,7 +42,7 @@
                         Title="Select City"
                         SelectedItem="{Binding SelectedTown}"
                         ItemsSource="{Binding Towns}"
-                        ItemDisplayBinding="{Binding IlceAdi}"  >
+                        ItemDisplayBinding="{Binding IlceAdi}"     >
                 </Picker>
             </StackLayout>
 
@@ -51,7 +54,15 @@
                  Minimum="1" />
             <Label Text="{Binding Source={x:Reference _stepper}, Path=Value, StringFormat='Kontrol araligi: {0:F0} dk.'}"
                        VerticalOptions="Center"/>
-            <Button Text="Kaydet" Command="{Binding SettingsPage}"/>
         </StackLayout>
+
+        <StackLayout Orientation="Horizontal">
+            
+            <Label Text="Uyarı bıldiri açık/kapalı"
+                       VerticalOptions="Center"/>
+            <Switch IsToggled="{Binding AlertUser}" />
+        </StackLayout>
+
+        <Button Text="Kaydet" Command="{Binding Save}" HorizontalOptions="CenterAndExpand"/>
     </StackLayout>
 </ContentPage>

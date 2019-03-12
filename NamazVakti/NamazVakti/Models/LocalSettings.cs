@@ -20,10 +20,19 @@ namespace NamazVakti.Models
                 {
                     AbsolutePlace = new AbsolutePlace
                     {
-                        City = new Sehir(),
-                        Country = new Ulke(),
+                        City = new Sehir
+                        {
+                            SehirAdi= "ANTALYA",
+                            SehirID="507"
+                        },
+                        Country = new Ulke
+                        {
+                            UlkeAdi = "TÜRKİYE",
+                           UlkeID="2"
+                        },
                         Town = new Ilce
                         {
+                            IlceAdi= "ANTALYA",
                             IlceID = "9225"
                         }
                     },

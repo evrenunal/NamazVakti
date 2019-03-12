@@ -7,6 +7,7 @@ using Plugin.Settings.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Essentials;
 
 namespace NamazVakti.Services
 {
@@ -15,15 +16,12 @@ namespace NamazVakti.Services
         private readonly string baseUrl;
 
         public NamazApiService()
-        {
-           // AppSettings = CrossSettings.Current;
+        {           
             baseUrl = "https://ezanvakti.herokuapp.com";
         }
 
-       // public ISettings AppSettings { get; }
-
-        internal DailyTimeData[] GetMonthlyPrayerTimes(string ilceKod)
-        {
+        internal  DailyTimeData[] GetMonthlyPrayerTimes(string ilceKod)
+        {                     
             var prayerTimeList = baseUrl
                           .AppendPathSegment("vakitler")
                           .SetQueryParams(new { ilce = ilceKod })
@@ -34,18 +32,17 @@ namespace NamazVakti.Services
         }
 
         internal Ulke[] GetCountries()
-        {
+        {           
             var countryList = baseUrl
                            .AppendPathSegment("ulkeler")
                            .GetJsonAsync<Ulke[]>()
                            .Result;
 
             return countryList;
-
         }
 
         internal Sehir[] GetCities(string ulkeKod)
-        {
+        {         
             var SehirList = baseUrl
                            .AppendPathSegment("sehirler")
                             .SetQueryParams(new { ulke = ulkeKod })
@@ -56,7 +53,7 @@ namespace NamazVakti.Services
         }
 
         internal Ilce[] GetTowns(string sehirKod)
-        {
+        {           
             var townList = baseUrl
                            .AppendPathSegment("ilceler")
                             .SetQueryParams(new { sehir = sehirKod })
@@ -64,6 +61,16 @@ namespace NamazVakti.Services
                            .Result;
 
             return townList;
+        }
+
+        private async void CheckInternetConnection()
+        {
+            while (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await App.Current.MainPage. DisplayAlert("No Internet", "Lutfen internet Baglantısını açın", "OK");
+
+                System.Threading.Thread.SpinWait(3);
+            }
         }
     }
 }

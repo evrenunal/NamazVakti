@@ -19,8 +19,9 @@ namespace NamazVakti.ViewModel
         public ObservableCollection<Ulke> Countries { get; set; }
         public ObservableCollection<Sehir> Cities { get; set; }
         public ObservableCollection<Ilce> Towns { get; set; }
-
+      
         private readonly NamazApiService namazApi;
+        private readonly MainViewModel mainViewModel;
 
         internal void CountryIndexChanged(EventArgs e)
         {
@@ -46,41 +47,51 @@ namespace NamazVakti.ViewModel
 
         public ICommand Save { get; set; }
 
-        public SettingsViewModel()
+        public SettingsViewModel(MainViewModel mainViewModel)
         {
             Countries = new ObservableCollection<Ulke>();
             Cities = new ObservableCollection<Sehir>();
             Towns = new ObservableCollection<Ilce>();
             namazApi = new NamazApiService();
             Save = new Command(SaveSettings);
+            this.mainViewModel = mainViewModel;
 
-            var currentSettings = LocalSettings.GetCurrent();
-            LoadCurrents(currentSettings);
+            var settings = LocalSettings.GetCurrent();
+            CurrentLocation = GetLocation(settings);
+            AlertUser = settings.AlertUser;
+            Interval = settings.Interval;
+            LoadCurrents(settings.AbsolutePlace);
         }
 
-        private void LoadCurrents(LocalSettings currentSettings)
+        private string GetLocation(LocalSettings settings)
+        {
+            return settings.AbsolutePlace.Country.UlkeAdi + " > " + settings.AbsolutePlace.City.SehirAdi + " > " + settings.AbsolutePlace.Town.IlceAdi;
+        }
+
+        public void LoadCurrents(AbsolutePlace place)
         {
             var countries = namazApi.GetCountries();
             countries.ForEach(c => Countries.Add(c));
 
-            if (!string.IsNullOrWhiteSpace(currentSettings.AbsolutePlace.Country?.UlkeID))
+            if (!string.IsNullOrWhiteSpace(place.Country?.UlkeID)
+                && Countries.Any())
             {
-                var selectedCnt = Countries.FirstOrDefault(c => c.UlkeID == currentSettings.AbsolutePlace.Country?.UlkeID);
+                var selectedCnt = Countries.FirstOrDefault(c => c.UlkeID == place.Country?.UlkeID);
                 SelectedCountry = selectedCnt;
 
                 var cities = namazApi.GetCities(selectedCnt.UlkeID);
                 cities.ForEach(c => Cities.Add(c));
-                if (!string.IsNullOrWhiteSpace(currentSettings.AbsolutePlace.City?.SehirID))
+
+                if (!string.IsNullOrWhiteSpace(place.City?.SehirID))
                 {
-                    var selectedCity = Cities.FirstOrDefault(c => c.SehirID == currentSettings.AbsolutePlace.City?.SehirID);
+                    var selectedCity = Cities.FirstOrDefault(c => c.SehirID == place.City?.SehirID);
                     SelectedCity = selectedCity;
 
                     var towns = namazApi.GetTowns(selectedCity.SehirID);
                     towns.ForEach(i => Towns.Add(i));
-                    if (!string.IsNullOrWhiteSpace(currentSettings.AbsolutePlace.Town?.IlceID))
+                    if (!string.IsNullOrWhiteSpace(place.Town?.IlceID))
                     {
-                        var selectedTown = Towns.FirstOrDefault(t => t.IlceID == currentSettings.AbsolutePlace.Town?.IlceID);
-
+                        var selectedTown = Towns.FirstOrDefault(t => t.IlceID == place.Town?.IlceID);
                         SelectedTown = SelectedTown;
                     }
                     else
@@ -94,28 +105,59 @@ namespace NamazVakti.ViewModel
 
         private async void SaveSettings(object obj)
         {
-
+            var oldSettings = LocalSettings.GetCurrent();
+            AbsolutePlace absoluteplace = null;
             if (SelectedTown == null || SelectedCity == null || SelectedCountry == null)
-                return;
-             
-            var settings = new LocalSettings
-            {
-                AbsolutePlace=new AbsolutePlace
+                absoluteplace = oldSettings.AbsolutePlace;
+            else
+                absoluteplace = new AbsolutePlace
                 {
-                    City=SelectedCity,
-                    Country=SelectedCountry,
-                    Town=SelectedTown
-                },
+                    City = SelectedCity,
+                    Country = SelectedCountry,
+                    Town = SelectedTown
+                };               
+             
+            var newSettings = new LocalSettings
+            {
+                AbsolutePlace=absoluteplace,
                 AlertUser=AlertUser,
                 Interval=Interval
             };
 
-            App.Current.Properties["settings"] = settings;
+            
 
-          await  App.Current.SavePropertiesAsync();
+            if (GetLocation( oldSettings) != GetLocation(newSettings))
+            {
+                mainViewModel.DeletePrayerTimes();
+            }
+
+            LocalSettings.SaveSettings(newSettings);
+
+            var navigation = App.Current.MainPage as NavigationPage;
+
+            mainViewModel.ReStart();
+
+            await navigation.PopAsync();
         }
 
-      
+
+        private string _currentLocation;
+        public string CurrentLocation
+        {
+            get
+            {
+                return _currentLocation;
+            }
+            set
+            {
+                if (_currentLocation != value)
+                {
+                    _currentLocation = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
 
         private int _interval;
         public int Interval
