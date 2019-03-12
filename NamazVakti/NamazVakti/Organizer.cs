@@ -176,14 +176,7 @@ namespace NamazVakti
                 Title = "Namaz Vakti",
                 Description = message,
                 ReturningData = "Dummy data", 
-                BadgeNumber=1,
-                Android=new AndroidOptions
-                {
-                    AutoCancel=true,
-                    TimeoutAfter=TimeSpan.FromSeconds(10)
-                }
-                // Returning data when tapped on notification.
-              //  NotifyTime = DateTime.Now// Used for Scheduling local notification.
+                BadgeNumber=1               
             };
             notificationService.Show(notification);
         }
