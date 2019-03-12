@@ -37,8 +37,8 @@ namespace NamazVakti
         }
 
         public void StartTimer()
-        {           
-            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+        {
+            Xamarin.Forms.Device.StartTimer(TimeSpan.FromSeconds(1), () =>
             {
 
                 if (mainPage.viewModel.PrayerTimeKind != PrayTimeKind.None)
@@ -55,7 +55,7 @@ namespace NamazVakti
 
         protected override void OnStart()
         {
-            AppCenter.Start("ios=6e72f21c-f13e-4204-8a94-43f7c64aa766;" + "android={a78c0c5d-7cee-4102-8c21-83929ee9e60f}", typeof(Analytics), typeof(Crashes));
+            AppCenter.Start("ios=6e72f21c-f13e-4204-8a94-43f7c64aa766;" + "android=a78c0c5d-7cee-4102-8c21-83929ee9e60f", typeof(Analytics), typeof(Crashes));
 
             StartTimer();
         }
